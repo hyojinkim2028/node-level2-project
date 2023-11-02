@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>몽구스 서버</title>
+    <style>
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      table th,
+      table td {
+        border: 1px solid black;
+      }
+    </style>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div>
+      <form id="post-form">
+        <fieldset>
+          <legend>게시글 등록</legend>
+          <div><input id="title" type="text" placeholder="제목" /></div>
+          <div><input id="name" type="text" placeholder="이름" /></div>
+          <div>
+            <input id="password" type="password" placeholder="비밀번호" />
+          </div>
+          <div><input id="content" type="text" placeholder="내용" /></div>
+          <button type="submit">등록</button>
+        </fieldset>
+      </form>
+    </div>
+    <br />
+    <table id="post-list">
+      <thead>
+        <tr>
+          <th>제목</th>
+          <th>이름</th>
+          <th>게시글</th>
+          <th>작성시간</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody id="post-list-body"></tbody>
+
+      <!-- 댓글로딩 -->
+    </table>
+    <br />
+    <div>
+      <form id="comment-form">
+        <fieldset>
+          <legend>댓글 등록</legend>
+          <div>
+            <input
+              id="post-id"
+              type="text"
+              disabled
+              placeholder="댓글 달 게시글"
+            />
+            <input id="commenterName" type="text" placeholder="사용자 아이디" />
+          </div>
+          <div><input id="comment" type="text" placeholder="댓글" /></div>
+          <button type="submit">등록</button>
+        </fieldset>
+      </form>
+    </div>
+    <br />
+    <table id="comment-list">
+      <thead>
+        <tr>
+          <th>작성자</th>
+          <th>댓글</th>
+          <th>작성시간</th>
+          <th>수정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+      <tbody id="comment-list-body"></tbody>
+    </table>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>
