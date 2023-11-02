@@ -1,5 +1,6 @@
 ;(function () {
-    getPost()
+  getPost()
+
   let id = ''
   // 게시글 등록 시
   document.getElementById('post-form').addEventListener('submit', async (e) => {
@@ -132,6 +133,7 @@
             } catch (err) {
               console.error(err)
             }
+            getComment(id)
           })
 
         // 삭제
@@ -144,7 +146,7 @@
             } catch (err) {
               console.error(err)
             }
-            location.reload()
+            getComment(id)
           })
       })
     } catch (err) {
@@ -176,14 +178,4 @@
       e.target.comment.value = ''
       document.querySelector('#post-id').value = ''
     })
-
 })()
-
-// (function() {
-//     let value = {
-//         init : function() {
-//             console.log("index js init");
-//         },
-//     }
-//     value.init();
-// })();
