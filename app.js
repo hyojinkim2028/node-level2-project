@@ -1,30 +1,20 @@
-const express = require('express')
-const path = require('path')
-const morgan = require('morgan')
-const nunjucks = require('nunjucks')
+const express = require('express');
+const path = require('path');
+const morgan = require('morgan');
 
-const connect = require('./schemas')
-const indexRouter = require('./routes/index')
-const postsRouter = require('./routes/posts')
-const commentsRouter = require('./routes/comments')
+const connect = require('./schemas');
+const productsRouter = require('./routes/products.router');
 
-const app = express()
-app.set('view engine', 'html')
-nunjucks.configure('views', {
-  express: app,
-  watch: true,
-})
-connect()
+const app = express();
 
-app.use(morgan('dev'))
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+connect();
 
-app.use('/', indexRouter)
-app.use('/posts', postsRouter)
-app.use('/comments', commentsRouter)
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.listen(8080, () => {
-  console.log('8080포트 열렸습니다!')
-})
+app.use('/products', productsRouter);
+
+app.listen(2000, () => {
+  console.log('2000포트 열렸습니다!');
+});
