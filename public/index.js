@@ -1,6 +1,5 @@
 ;(function () {
   getPost()
-
   let id = ''
   // 게시글 등록 시
   document.getElementById('post-form').addEventListener('submit', async (e) => {
@@ -38,15 +37,15 @@
       const posts = res.data
       posts.forEach((post, idx) => {
         let postView = `
-      <tr class="post-id" data-documentId=${post._id}>
-      <td>${post.title}</td>
-      <td>${post.name}</td>
-      <td>${post.content}</td>
-      <td>${post.createdAt}</td>
-      <td><button class="editPost">수정</button></td>
-      <td><button class="deletePost">삭제</button></td>
-      </tr>
-      `
+          <tr class="post-id" data-documentId=${post._id}>
+          <td>${post.title}</td>
+          <td>${post.name}</td>
+          <td>${post.content}</td>
+          <td>${post.createdAt}</td>
+          <td><button class="editPost">수정</button></td>
+          <td><button class="deletePost">삭제</button></td>
+          </tr>
+          `
         document
           .querySelector('#post-list-body')
           .insertAdjacentHTML('beforeend', postView)
