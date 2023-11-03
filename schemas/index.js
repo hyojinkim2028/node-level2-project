@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connect = () => {
   mongoose
-    .connect('mongodb://root:1214@localhost:27017/admin', {
+    .connect('mongodb://root:1214@localhost:27017/admin?authSource=admin', {
       dbName: 'productProject',
       useNewUrlParser: true,
     })
