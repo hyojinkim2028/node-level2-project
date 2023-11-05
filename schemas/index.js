@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
+// db 아이디, 비밀번호 정보 보안
+require('dotenv').config();
+const connectUrl = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.rywpqas.mongodb.net/?retryWrites=true&w=majority`;
 
 const connect = () => {
   mongoose
-    .connect('mongodb://localhost:27017/spa_mall')
+    .connect(connectUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
     .then(() => {
       console.log('몽고디비 연결 성공');
     })

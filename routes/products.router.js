@@ -31,7 +31,7 @@ router
         {},
         { _id: 0, goods: 1, seller: 1, status: 1, createdAt: 1 }
       ).sort({ createdAt: -1 });
-      return res.status(200).json(products);
+      res.json(products);
     } catch (err) {
       console.error(err);
       next(err);
