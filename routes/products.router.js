@@ -1,8 +1,8 @@
 // boolean타입의 상품 판매상태 'FOR_SALE' 또는 'SOLD_OUT' 로 변환해주는 함수
-function getStatus(s) {
-  if (s === true) {
-    return (s = 'FOR_SALE');
-  } else return (s = 'SOLD_OUT');
+function getStatus(status) {
+  if (status === true) {
+    return (status = 'FOR_SALE');
+  } else return (status = 'SOLD_OUT');
 }
 
 const express = require('express');
@@ -15,7 +15,7 @@ router
   // 상품 작성
   .post(async (req, res, next) => {
     try {
-      const products = await Product.create({
+      const product = await Product.create({
         goods: req.body.goods,
         content: req.body.content,
         status: req.body.status,
@@ -23,7 +23,7 @@ router
         password: req.body.password,
       });
 
-      res.status(201).json(products);
+      res.status(201).json(product);
     } catch (err) {
       console.error(err);
       next(err);
@@ -82,16 +82,16 @@ createdAt : ${product.createdAt}
     // 상품 존재여부 확인 먼저
     try {
       // 수정할 상품 존재여부 확인
-      const products = await Product.findOne({ _id: req.params.id });
+      const product = await Product.findOne({ _id: req.params.id });
 
       // 존재하는 값 없으면 에러 반환
-      if (products === null) {
+      if (product === null) {
         return res
           .status(400)
           .json({ errorMessage: '존재하지 않는 상품입니다.' });
       }
       // 비밀번호 불일치시 에러 반환
-      if (products.password !== req.body.password) {
+      if (product.password !== req.body.password) {
         return res
           .status(400)
           .json({ errorMessage: '비밀번호가 일치하지 않습니다.' });
@@ -121,17 +121,17 @@ createdAt : ${product.createdAt}
   // 상품 삭제
   .delete(async (req, res, next) => {
     try {
-      const products = await Product.findOne({ _id: req.params.id });
+      const product = await Product.findOne({ _id: req.params.id });
 
       // 존재하는 값 없으면 에러 반환
-      if (products === null) {
+      if (product === null) {
         return res
           .status(400)
           .json({ errorMessage: '존재하지 않는 상품입니다.' });
       }
 
       // 비밀번호 불일치시 에러 반환
-      if (products.password !== req.body.password) {
+      if (product.password !== req.body.password) {
         return res
           .status(400)
           .json({ errorMessage: '비밀번호가 일치하지 않습니다.' });
