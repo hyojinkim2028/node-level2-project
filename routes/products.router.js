@@ -1,3 +1,10 @@
+// boolean타입의 상품 판매상태 'FOR_SALE' 또는 'SOLD_OUT' 로 변환해주는 함수
+function getStatus(s) {
+  if (s === true) {
+    return (s = 'FOR_SALE');
+  } else return (s = 'SOLD_OUT');
+}
+
 const express = require('express');
 const Product = require('../schemas/products.schema');
 
@@ -15,7 +22,7 @@ router
         seller: req.body.seller,
         password: req.body.password,
       });
-      console.log(products);
+
       res.status(201).json(products);
     } catch (err) {
       console.error(err);
@@ -27,11 +34,18 @@ router
     try {
       // 상품명, 작성자명, 상품 상태, 작성 날짜만 조회하기
       // 상품 목록은 작성 날짜를 기준으로 내림차순(최신순) 정렬
-      const products = await Product.find(
-        {},
-        { _id: 0, goods: 1, seller: 1, status: 1, createdAt: 1 }
-      ).sort({ createdAt: -1 });
-      res.json(products);
+      const products = await Product.find({}).sort({ createdAt: -1 });
+
+      const getProducts = products.map((product, idx) => {
+        return {
+          goods: product.goods,
+          seller: product.seller,
+          status: getStatus(product.status),
+          createdAt: product.createdAt,
+        };
+      });
+
+      res.json(getProducts);
     } catch (err) {
       console.error(err);
       next(err);
