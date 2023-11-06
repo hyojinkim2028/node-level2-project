@@ -57,24 +57,12 @@ router
 
   // 상품 상세 조회
   .get(async (req, res) => {
-    const product = await Product.findOne(
-      {
-        _id: req.params.id,
-      }
-      // { goods: 1, content: 1, seller: 1, status: 1, createdAt: 1 }
-    );
+    const product = await Product.findOne({
+      _id: req.params.id,
+    });
 
-    // const getProduct = products.map((product, idx) => {
-    //   return {
-    //     goods: product.goods,
-    //     seller: product.seller,
-    //     status: getStatus(product.status),
-    //     createdAt: product.createdAt,
-    //   };
-    // });
     if (product) {
       // 입력 아이디값과 일치하는 상품 있으면 해당 상품 상세 반환
-
       res.json([
         `
 goods : ${product.goods}
