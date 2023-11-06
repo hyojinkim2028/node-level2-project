@@ -57,15 +57,32 @@ router
 
   // 상품 상세 조회
   .get(async (req, res) => {
-    const products = await Product.findOne(
+    const product = await Product.findOne(
       {
         _id: req.params.id,
-      },
-      { goods: 1, content: 1, seller: 1, status: 1, createdAt: 1 }
+      }
+      // { goods: 1, content: 1, seller: 1, status: 1, createdAt: 1 }
     );
-    if (products) {
+
+    // const getProduct = products.map((product, idx) => {
+    //   return {
+    //     goods: product.goods,
+    //     seller: product.seller,
+    //     status: getStatus(product.status),
+    //     createdAt: product.createdAt,
+    //   };
+    // });
+    if (product) {
       // 입력 아이디값과 일치하는 상품 있으면 해당 상품 상세 반환
-      res.json(products);
+
+      res.json([
+        `
+goods : ${product.goods}
+seller : ${product.seller}
+status : ${getStatus(product.status)}
+createdAt : ${product.createdAt}
+`,
+      ]);
     } else {
       // 일치한 값 없으면
       res.status(400).json({ errorMessage: '상품 조회에 실패했습니다.' });
