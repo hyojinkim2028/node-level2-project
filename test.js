@@ -6,7 +6,7 @@ function getStatus(status) {
 }
 
 const express = require('express');
-const Product = require('../schemas/products.schema');
+const Product = require('../models/product');
 
 const router = express.Router();
 
