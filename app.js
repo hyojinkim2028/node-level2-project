@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 
-const sequelize = require('./models').sequelize; //추가
-const usersRouter = require('./routes/users');
+const { sequelize } = require('./models'); //추가
+const usersRouter = require('./routes/users.router');
 const goodsRouter = require('./routes/goods.router');
 
 const app = express();

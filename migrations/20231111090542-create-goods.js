@@ -3,12 +3,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Goods', {
-      goodsId: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
       goods: {
         type: Sequelize.STRING,
       },
@@ -16,7 +10,8 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.ENUM('for-sale', 'sold-out'),
+        defaultValue: 'for-sale',
       },
       createdAt: {
         allowNull: false,

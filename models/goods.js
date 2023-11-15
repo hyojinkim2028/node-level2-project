@@ -1,28 +1,28 @@
-'use strict';
-const { Model } = require('sequelize');
-const { Sequelize } = require('.');
-module.exports = (sequelize, DataTypes) => {
-  class Goods extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
+const Sequelize = require('sequelize');
+
+class Goods extends Sequelize.Model {
+  static initiate(sequelize) {
+    Goods.init(
+      {
+        goods: Sequelize.STRING,
+        content: Sequelize.STRING,
+        status: Sequelize.ENUM('for-sale', 'sold-out'),
+      },
+      {
+        sequelize,
+        timestamps: true, // createdAt,updatedAt
+        underscored: false,
+        modelName: 'Goods',
+        tableName: 'Goods',
+        paranoid: true, // deletedAt
+        charset: 'utf8',
+        collate: 'utf8_general_ci',
+      }
+    );
   }
-  Goods.init(
-    {
-      goods: DataTypes.STRING,
-      content: DataTypes.STRING,
-      userId: DataTypes.INTEGER,
-      status: DataTypes.BOOLEAN,
-    },
-    {
-      sequelize,
-      modelName: 'Goods',
-    }
-  );
-  return Goods;
-};
+  static associate(db) {
+    db.Goods.belongsTo(db.User);
+  }
+}
+
+module.exports = Goods;
