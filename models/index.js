@@ -25,3 +25,5 @@ User.associate(db);
 Goods.associate(db);
 
 module.exports = db;
+
+
