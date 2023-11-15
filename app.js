@@ -1,7 +1,6 @@
 const express = require('express');
-const path = require('path');
 
-const { sequelize } = require('./models'); //추가
+const { sequelize } = require('./models');
 const usersRouter = require('./routes/users.router');
 const goodsRouter = require('./routes/goods.router');
 
@@ -10,7 +9,7 @@ app.use(express.json());
 
 // db연결
 sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
   })

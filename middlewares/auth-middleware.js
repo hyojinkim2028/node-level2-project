@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken'); // jwt
-const User = require('../models/user'); // 모델
+const User = require('../models/user'); 
 const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = async (req, res, next) => {
-  const { authorization } = req.headers;
 
+  const { authorization } = req.headers; 
   const [authType, authToken] = (authorization || '').split(' ');
 
   if (!authToken || authType !== 'Bearer') {
@@ -16,9 +16,9 @@ module.exports = async (req, res, next) => {
   }
 
   try {
-    const { id } = jwt.verify(authToken, process.env.SECRET_KEY); // 암호화한 키 해독
-    const user = await User.findByPk(id);
-    res.locals.user = user;
+    const { id } = jwt.verify(authToken, process.env.SECRET_KEY); // 암호화한 키 해독해 id 할당
+    const user = await User.findByPk(id); // 존재하는 id인 경우 user에 담김
+    res.locals.user = user; // 해당 id의 유저정보 res.locals에 담아 어디서든 호출 가능 
     next();
   } catch (err) {
     console.error(err);

@@ -21,7 +21,7 @@ class Goods extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Goods.belongsTo(db.User);
+    db.Goods.belongsTo(db.User); // n : 1
   }
 }
 
