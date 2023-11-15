@@ -5,7 +5,6 @@ const authMiddleware = require('../middlewares/auth-middleware');
 const router = express.Router();
 
 // 상품 전체조회
-
 router.route('/').get(async (req, res) => {
   try {
     const getGoods = await Goods.findAll({});
@@ -41,12 +40,11 @@ router.route('/').get(async (req, res) => {
     res.send({ goods });
   } catch (error) {
     console.error(error);
-    return res.status(500).send({  errorMessage: "서버오류" });
+    return res.status(500).send({ errorMessage: '서버오류' });
   }
 });
 
 // 상품 상세조회
-
 router.route('/:id').get(async (req, res) => {
   // params에 들어온 아이디와 테이블에 저장된 아이디 일치하는 상품 조회
   try {
@@ -72,7 +70,7 @@ router.route('/:id').get(async (req, res) => {
     res.status(200).send(getGoods);
   } catch (error) {
     console.error(error);
-    return res.status(500).send({  errorMessage: "서버오류" });
+    return res.status(500).send({ errorMessage: '서버오류' });
   }
 });
 
@@ -81,8 +79,8 @@ router.use(authMiddleware, (req, res, next) => {
   next();
 });
 
-// 상품 등록
 try {
+  // 상품 등록
   router.route('/').post(async (req, res) => {
     // UserId : join 시 자동 생성되는 변수
     const UserId = res.locals.user.id;
@@ -122,13 +120,12 @@ try {
   });
 } catch (error) {
   console.error(error);
-  return res.status(500).send({  errorMessage: "서버오류" });
+  return res.status(500).send({ errorMessage: '서버오류' });
 }
 
 router
   .route('/:id')
   // 상품수정
-
   .put(async (req, res) => {
     try {
       const userId = res.locals.user.id;
@@ -177,11 +174,11 @@ router
       res.status(201).send({ message: '상품 수정이 완료되었습니다.' });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({  errorMessage: "서버오류" });
+      return res.status(500).send({ errorMessage: '서버오류' });
     }
   })
-  // 상품 삭제
 
+  // 상품 삭제
   .delete(async (req, res) => {
     try {
       const userId = res.locals.user.id;
@@ -215,7 +212,7 @@ router
       res.status(200).send({ Message: '상품 삭제가 완료되었습니다.' });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({  errorMessage: "서버오류" });
+      return res.status(500).send({ errorMessage: '서버오류' });
     }
   });
 

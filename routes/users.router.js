@@ -10,10 +10,10 @@ const User = require('../models/user');
 const router = express.Router();
 
 // 회원가입
-
 router.post('/join', async (req, res) => {
   try {
     const { email, name, password, confirmPassword } = req.body;
+
     // 이메일 검증식 : 소문자 a~z 와 숫자 0~9까지 + @ + 소문자 a~z + . + 소문자 a~z (2~3 자리)의 형태로 가능
     let regex = new RegExp('[a-z0-9]+@[a-z]+.+[a-z]{2,3}');
 
@@ -63,7 +63,6 @@ router.post('/join', async (req, res) => {
 });
 
 // 로그인
-
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
