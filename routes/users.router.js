@@ -24,15 +24,6 @@ router.post('/join', async (req, res) => {
     return;
   }
 
-  // 비밀번호가 확인비밀번호가 다르거나 비번 길이가 6자 미만일때 오류 + 조기리턴
-  if (password !== confirmPassword || password.length < 6) {
-    res.status(400).send({
-      errorMessage:
-        '비밀번호 확인과 일치한 6자리 이상의 비밀번호를 입력해주세요.',
-    });
-    return;
-  }
-
   // email 중복여부 확인
   const existsUsers = await User.findAll({
     where: {
@@ -44,6 +35,15 @@ router.post('/join', async (req, res) => {
   if (existsUsers.length) {
     res.status(400).send({
       errorMessage: '이메일이 이미 사용중입니다.',
+    });
+    return;
+  }
+
+  // 비밀번호가 확인비밀번호가 다르거나 비번 길이가 6자 미만일때 오류 + 조기리턴
+  if (password !== confirmPassword || password.length < 6) {
+    res.status(400).send({
+      errorMessage:
+        '비밀번호 확인과 일치한 6자리 이상의 비밀번호를 입력해주세요.',
     });
     return;
   }
@@ -69,9 +69,6 @@ router.post('/login', async (req, res) => {
     },
   });
 
-  // 정보가 있는 경우 비밀번호 검증
-  const auth = await bcrypt.compare(password, user.password);
-
   // 사용자가 존재하지 않거나, 입력받은 비밀번호가 사용자의 비밀번호화 다를때
   if (!user || !auth) {
     res.status(400).send({
@@ -79,6 +76,9 @@ router.post('/login', async (req, res) => {
     });
     return;
   }
+
+  // 정보가 있는 경우 비밀번호 검증
+  const auth = await bcrypt.compare(password, user.password);
 
   // 오류 없을 경우 로그인 성공 + 12시간 유효한 토큰 발급
   res.status(200).send({

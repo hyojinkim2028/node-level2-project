@@ -28,7 +28,7 @@ router.route('/').get(async (req, res) => {
   // 전체 조회
   try {
     const goods = await Goods.findAll({
-      attributes: ['goods', 'content', 'status', 'createdAt'],
+      attributes: ['id', 'goods', 'content', 'status', 'createdAt'],
       order: [[['createdAt', sort]]],
       // User 테이블 join
       include: [
@@ -53,7 +53,7 @@ router.route('/:id').get(async (req, res) => {
   // params에 들어온 아이디와 테이블에 저장된 아이디 일치하는 상품 조회
   try {
     const getGoods = await Goods.findOne({
-      attributes: ['goods', 'content', 'status', 'createdAt'],
+      attributes: ['id', 'goods', 'content', 'status', 'createdAt'],
       where: { id: req.params.id },
       include: [
         {
@@ -68,6 +68,7 @@ router.route('/:id').get(async (req, res) => {
       res.status(404).send({
         errorMessage: '존재하지 않는 상품입니다.',
       });
+      return;
     }
 
     res.status(200).send(getGoods);
@@ -85,7 +86,7 @@ router.use(authMiddleware, (req, res, next) => {
 
 // 상품 등록
 router.route('/').post(async (req, res) => {
-  // UserId : join 시 자동 생성되는 변수 
+  // UserId : join 시 자동 생성되는 변수
   const UserId = res.locals.user.id;
 
   const { goods, content, status } = req.body;
@@ -119,7 +120,7 @@ router.route('/').post(async (req, res) => {
   // 정상 입력된 경우 상품 생성됨
   await Goods.create({ goods, content, UserId, status });
 
-  res.status(200).send({ Message: '등록 완료! ' });
+  res.status(201).send({ Message: '등록 완료! ' });
 });
 
 router
@@ -134,7 +135,7 @@ router
       where: { id: req.params.id },
     });
 
-    // 해당하는 상품 없으면 오류 + 조기리턴 
+    // 해당하는 상품 없으면 오류 + 조기리턴
     if (!getGoods) {
       res.status(404).send({
         errorMessage: '해당하는 상품이 없습니다.',
@@ -152,7 +153,7 @@ router
       return;
     }
 
-    // 수정하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴 
+    // 수정하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴
     if (userId !== getGoods.UserId) {
       res.status(400).send({
         errorMessage: '해당 상품을 등록한 사용자만 수정 권한이 있습니다.',
@@ -192,7 +193,7 @@ router
       return;
     }
 
-    // 삭제하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴 
+    // 삭제하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴
     if (userId !== getGoods.UserId) {
       res.status(400).send({
         errorMessage: '해당 상품을 등록한 사용자만 삭제 권한이 있습니다.',

@@ -17,7 +17,7 @@ sequelize
     console.error(err);
   });
 
-app.use('/', usersRouter);
+app.use('/auth', usersRouter);
 app.use('/goods', goodsRouter);
 
 app.listen(2000, () => {
