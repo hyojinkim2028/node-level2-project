@@ -6,7 +6,10 @@ class Goods extends Sequelize.Model {
       {
         goods: Sequelize.STRING,
         content: Sequelize.STRING,
-        status: Sequelize.ENUM('for-sale', 'sold-out'),
+        status: {
+          type: Sequelize.ENUM(['FOR-SALE', 'SOLD-OUT']),
+          defaultValue: 'FOR-SALE',
+        },
       },
       {
         sequelize,
@@ -21,7 +24,10 @@ class Goods extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Goods.belongsTo(db.User); // n : 1
+    db.Goods.belongsTo(db.User, {
+      foreignKey: 'userId',
+      onDelete: 'cascade',
+    }); // n : 1
   }
 }
 

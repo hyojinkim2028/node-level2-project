@@ -4,12 +4,12 @@ const bcrypt = require('bcrypt');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { Op } = require('sequelize');
 const User = require('../models/user');
+const authMiddleware = require('../middlewares/auth-middleware');
 
 const router = express.Router();
 
-// 회원가입
+// 회원가입 
 router.post('/join', async (req, res) => {
   try {
     const { email, name, password, confirmPassword } = req.body;
@@ -26,14 +26,12 @@ router.post('/join', async (req, res) => {
     }
 
     // email 중복여부 확인
-    const existsUsers = await User.findAll({
-      where: {
-        [Op.or]: [{ email }],
-      },
+    const existsUsers = await User.findOne({
+      where: { email },
     });
 
     // 중복된 이메일이면 오류 + 조기리턴
-    if (existsUsers.length) {
+    if (existsUsers) {
       res.status(400).send({
         errorMessage: '이메일이 이미 사용중입니다.',
       });
@@ -85,16 +83,27 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    // 오류 없을 경우 로그인 성공 + 12시간 유효한 토큰 발급
-    res.status(200).send({
-      Message: `로그인에 성공했습니다. ${jwt.sign(
-        { id: user.id },
-        process.env.SECRET_KEY,
-        {
-          expiresIn: '12h',
-        }
-      )},{이메일: ${user.email},  이름: ${user.name}}`,
+    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+      expiresIn: '12h',
     });
+
+    console.log(token);
+    res.redirect(301, 'http://localhost:2000/api/auth/users/me');
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ errorMessage: '서버오류' });
+  }
+});
+
+router.get('/users/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        email: res.locals.user.email,
+      },
+      attributes: ['id', 'email', 'name'],
+    });
+    res.status(200).send({ Message: `환영합니다. ${user.name}님.`, user });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ errorMessage: '서버오류' });

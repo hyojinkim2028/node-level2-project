@@ -17,15 +17,15 @@ sequelize
     console.error(err);
   });
 
-app.use('/auth', usersRouter);
-app.use('/goods', goodsRouter);
+app.use('/api/auth', usersRouter);
+app.use('/api/goods', goodsRouter);
 
-// 에러처리
-app.use((req, res, next) => {
-  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)
-  error.status = 404
-  next(error)
-})
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = err || {};
+  res.status(err.status || 500);
+  res.render('error');
+});
 
 app.listen(2000, () => {
   console.log('2000포트 열렸습니다!');

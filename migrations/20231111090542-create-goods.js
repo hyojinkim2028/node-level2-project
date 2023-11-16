@@ -10,8 +10,8 @@ module.exports = {
         type: Sequelize.STRING,
       },
       status: {
-        type: Sequelize.ENUM('for-sale', 'sold-out'),
-        defaultValue: 'for-sale',
+        type: Sequelize.ENUM(['FOR-SALE', 'SOLD-OUT']),
+        defaultValue: 'FOR-SALE',
       },
       createdAt: {
         allowNull: false,
