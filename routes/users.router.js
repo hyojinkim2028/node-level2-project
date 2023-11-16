@@ -6,12 +6,17 @@ dotenv.config();
 
 const User = require('../models/user');
 const authMiddleware = require('../middlewares/auth-middleware');
-
 const router = express.Router();
 
-// 회원가입 
-router.post('/join', async (req, res) => {
+// 회원가입
+router.post('/join', authMiddleware, async (req, res) => {
   try {
+    // 이미 로그인을 한 경우 에러메세지 + 종료
+    if (res.locals.user) {
+      return res.status(400).send({
+        errorMessage: '이미 로그인된 유저입니다.',
+      });
+    }
     const { email, name, password, confirmPassword } = req.body;
 
     // 이메일 검증식 : 소문자 a~z 와 숫자 0~9까지 + @ + 소문자 a~z + . + 소문자 a~z (2~3 자리)의 형태로 가능
@@ -19,10 +24,10 @@ router.post('/join', async (req, res) => {
 
     // 이메일 형식이 검증식을 통과 못할때 오류 + 조기리턴
     if (!regex.test(email)) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '이메일 형식이 올바르지 않습니다.',
       });
-      return;
+      
     }
 
     // email 중복여부 확인
@@ -32,19 +37,17 @@ router.post('/join', async (req, res) => {
 
     // 중복된 이메일이면 오류 + 조기리턴
     if (existsUsers) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '이메일이 이미 사용중입니다.',
       });
-      return;
     }
 
     // 비밀번호가 확인비밀번호가 다르거나 비번 길이가 6자 미만일때 오류 + 조기리턴
     if (password !== confirmPassword || password.length < 6) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage:
           '비밀번호 확인과 일치한 6자리 이상의 비밀번호를 입력해주세요.',
       });
-      return;
     }
 
     // 오류가 없을 경우 비밀번호 hash 처리 하여 유저 생성
@@ -61,7 +64,14 @@ router.post('/join', async (req, res) => {
 });
 
 // 로그인
-router.post('/login', async (req, res) => {
+router.post('/login', authMiddleware, async (req, res) => {
+  // 이미 로그인을 한 경우 에러메세지 + 종료
+  if (res.locals.user) {
+    return res.status(400).send({
+      errorMessage: '이미 로그인된 유저입니다.',
+    });
+  }
+
   try {
     const { email, password } = req.body;
 
@@ -77,24 +87,23 @@ router.post('/login', async (req, res) => {
 
     // 사용자가 존재하지 않거나, 입력받은 비밀번호가 사용자의 비밀번호화 다를때
     if (!user || !auth) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '이메일 또는 패스워드가 틀렸습니다.',
       });
-      return;
     }
 
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
       expiresIn: '12h',
     });
 
-    console.log(token);
-    res.redirect(301, 'http://localhost:2000/api/auth/users/me');
+    res.send({ 토큰: token });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ errorMessage: '서버오류' });
   }
 });
 
+// 인증 성공시 마이페이지 조회 가능
 router.get('/users/me', authMiddleware, async (req, res) => {
   try {
     const user = await User.findOne({
@@ -103,7 +112,7 @@ router.get('/users/me', authMiddleware, async (req, res) => {
       },
       attributes: ['id', 'email', 'name'],
     });
-    res.status(200).send({ Message: `환영합니다. ${user.name}님.`, user });
+    res.status(200).send({ user });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ errorMessage: '서버오류' });

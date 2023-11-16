@@ -11,10 +11,9 @@ router.get('/', async (req, res) => {
 
     // 존재하는 상품 없을시 조기 리턴
     if (getGoods.length === 0) {
-      res.status(404).send({
+      return res.status(404).send({
         errorMessage: '존재하는 상품이 없습니다.',
       });
-      return;
     }
 
     // 값이 없는 경우에는 최신순 정렬
@@ -48,32 +47,29 @@ router.get('/', async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const userId = res.locals.user.id;
-
     const { goods, content, status } = req.body;
 
     // 조회되는 user가 없는 경우(로그인이 안된 경우임) 오류 + 조기리턴
     if (!userId) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '로그인을 해야 상품작성이 가능합니다.',
       });
-      return;
     }
 
     // goods, content, status 중 하나라도 입력하지 않은 경우 오류 + 조기리턴
     if (!goods || !content || !status) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '상품 정보를 모두 작성해주세요.',
       });
-      return;
     }
+
     // 상품상태 for-sale 또는 sold-out 이외의 값을 입력하면 오류 + 조기리턴
     if (status === 'FOR-SALE' || status === 'SOLD-OUT') {
     } else {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage:
           '상품 상태에는 FOR-SALE 또는 SOLD-OUT 만 입력할 수 있습니다.',
       });
-      return;
     }
 
     // 정상 입력된 경우 상품 생성됨
@@ -103,10 +99,9 @@ router.get('/:id', async (req, res) => {
 
     // 해당 상품 없는 경우 오류 + 조기리턴
     if (!getGoods) {
-      res.status(404).send({
+      return res.status(404).send({
         errorMessage: '존재하지 않는 상품입니다.',
       });
-      return;
     }
 
     res.status(200).send(getGoods);
@@ -127,28 +122,25 @@ router.put('/:id', authMiddleware, async (req, res) => {
 
     // 해당하는 상품 없으면 오류 + 조기리턴
     if (!getGoods) {
-      res.status(404).send({
+      return res.status(404).send({
         errorMessage: '해당하는 상품이 없습니다.',
       });
-      return;
     }
 
     const { goods, content, status } = req.body;
 
     // goods, content, status 중 하나라도 입력하지 않은 경우 오류 + 조기리턴
     if (!goods || !content || !status) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '상품명, 작성 내용, 상품 상태를 모두 입력해주세요.',
       });
-      return;
     }
 
     // 수정하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴
     if (userId !== getGoods.userId) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '해당 상품을 등록한 사용자만 수정 권한이 있습니다.',
       });
-      return;
     }
 
     // 오류 없는 경우 body로 가져온 데이터로 수정
@@ -181,18 +173,16 @@ router.delete('/:id', authMiddleware, async (req, res) => {
 
     // 조회된 상품 없는 경우 오류 + 조기리턴
     if (!getGoods) {
-      res.status(404).send({
+      return res.status(404).send({
         errorMessage: '해당하는 상품이 없습니다.',
       });
-      return;
     }
 
     // 삭제하려는 유저와 해당 상품을 등록한 유저가 다른 경우 오류 + 조기리턴
     if (userId !== getGoods.userId) {
-      res.status(400).send({
+      return res.status(400).send({
         errorMessage: '해당 상품을 등록한 사용자만 삭제 권한이 있습니다.',
       });
-      return;
     }
 
     // 오류 없는 경우 삭제
